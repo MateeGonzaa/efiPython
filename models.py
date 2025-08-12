@@ -1,4 +1,4 @@
-#Mateo Gonzalez y Lucas Aruza
+#Mateo Gonzalez y Lucas Aruza 
 from app import db  # Importa la instancia de la base de datos (MySQL) desde la aplicación principal
 from flask_login import UserMixin  # Clase auxiliar para integrar el modelo de usuario con Flask-Login
 
