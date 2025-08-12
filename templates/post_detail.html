@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+{% block head_title %}{{ post.titulo }}{% endblock %}
+
+{% block content  %}
+<div class="card">
+    <div class="card-header">
+        <h2>{{ post.titulo }}</h2>
+
+            {% if current_user.is_authenticated and current_user.id == post.usuario_id %}
+            <div>
+                <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-sm btn-warning">Editar</a>
+                <form action="{{ url_for('delete_post', post_id=post.id) }}" method="POST" style="display: inline;" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este post?');">
+                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                </form>
+            </div>
+            {% endif %}
+
+        <small>Publicado por {{ post.usuario.username }} el {{ post.fecha_creacion.strftime('%d/%m/%Y a las %H:%M') }}</small>
+        <div class="mt-2">
+            {% for categoria in post.categorias %}
+                <span class="badge badge-primary">{{ categoria.nombre }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- pre-wrap respeta los saltos de línea y espacios del contenido -->
+        <p class="card-text" style="white-space: pre-wrap;">{{ post.contenido }}</p>
+    </div>
+</div>
+
+<hr>
+
+<h4>Comentarios ({{ post.comentarios|length }})</h4>
+
+{% if current_user.is_authenticated %}
+    <form method="POST" class="mb-4">
+        <div class="form-group">
+            <label for="texto"><strong>Agregar comentario</strong></label>
+            <textarea class="form-control" name="texto" id="texto" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Comentar</button>
+    </form>
+{% else %}
+    <p class="alert alert-info">Debes <a href="{{ url_for('login') }}">iniciar sesión</a> para poder comentar.</p>
+{% endif %}
+
+{% for c in post.comentarios %}
+    <div class="card mb-2">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <p class="mb-0">{{ c.texto }}</p>
+                {% if current_user.is_authenticated and (current_user.id == c.usuario_id or current_user.id == post.usuario_id) %}
+                <form action="{{ url_for('delete_comment', comment_id=c.id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este comentario?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">&times;</button>
+                </form>
+                {% endif %}
+            </div>
+            <hr>
+            <small class="text-muted"><strong>{{ c.usuario.username }}</strong> - {{ c.fecha_creacion.strftime('%d/%m/%Y') }}</small>
+        </div>
+    </div>
+{% else %}
+    <p>No hay comentarios. ¡Sé el primero en comentar!</p>
+{% endfor %}
+{% endblock %}

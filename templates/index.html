@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block head_title %}Inicio{% endblock %}
+
+{% block content  %}
+<div class="text-center py-5">
+    {% if current_user.is_authenticated %}
+        <h1 class="display-4">¡Bienvenido, {{ current_user.username }}!</h1>
+        <p class="lead">Has iniciado sesión correctamente.</p>
+    {% else %}
+        <h1 class="display-4">Bienvenido a MyL</h1>
+        <p class="lead">En esta pagina puedes realizar posteos y comentarios.</p>
+
+        <p class="lead">Si ya tienes una cuenta, inicia sesión o regístrate para comenzar.</p>
+
+        <div class="mt-4">
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg mr-3">Iniciar Sesión</a>
+            <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg">Registrarse</a>
+        </div>
+    {% endif %}
+
+    <hr>
+
+    <div class="row">
+    {% for post in posts %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
+                <h4 class="card-title">{{ post.titulo }}</h4>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    Por {{ post.usuario.username }} el {{ post.fecha_creacion.strftime('%d/%m/%Y') }}
+                </h6>
+                
+                <div class="mb-2">
+                    {% for categoria in post.categorias %}
+                        <span class="badge badge-info">{{ categoria.nombre }}</span>
+                    {% endfor %}
+                </div>
+
+                <p class="card-text">{{ post.contenido|truncate(150) }}</p>
+
+                <div class="mt-auto">
+                    <a href="{{ url_for('post_detail', post_id=post.id) }}" class="btn btn-primary">Leer más</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col">
+        <p class="text-center">No hay posts para mostrar. ¡Sé el primero en crear uno!</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
