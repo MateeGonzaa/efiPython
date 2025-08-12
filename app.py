@@ -1,4 +1,4 @@
-#Mateo Gonzalez y Lucas Aruza
+#Mateo Gonzalez y Lucas Aruza 
 from flask import Flask, flash, render_template, request, redirect, url_for, abort
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
